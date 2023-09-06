@@ -29,8 +29,13 @@ const wss = new WebSocket.Server({server});
 // 2. 에로우 펑션을 활용한 함수
 wss.on("connection", (socket) => {
     // console.log(socket);
-    console.log("Connected to Browser")
-    socket.send("hello!")
+    console.log("Connected to Browser");
+    socket.on("close", () => console.log("Disconnected from Browser"));
+    socket.on("message", (message) => {
+        // console.log(`${message}`)
+        socket.send(`${message}`);
+    });
+    // socket.send("hello!");
 });
 
 server.listen(3000, handleListen)
