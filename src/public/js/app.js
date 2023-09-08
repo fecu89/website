@@ -1,33 +1,15 @@
-// alert("hi!");
+const socket = io();
 
-// const socket = new WebSocket("http://localhost:3000")
+const welcome = document.getElementById("welcome");
+const form = welcome.querySelector("form");
 
-const messageList = document.querySelector("ul");
-const messageForm = document.querySelector("form");
-
-const socket = new WebSocket(`ws://${window.location.host}`);
-
-socket.addEventListener("open", () => {
-    console.log("Connected to Server");
-});
-
-socket.addEventListener("message", (message) => {
-    console.log(`Just got this ${message.data} frome the server`);
-});
-
-socket.addEventListener("close", () => {
-    console.log("Dissconnected from Server");
-});
- 
-// setTimeout(() => {
-//     socket.send("hello from browser!");
-// }, 5000);
-
-function handleSubmit(event){
+function handleRoomSubmit(event){
     event.preventDefault();
-    const input = messageForm.querySelector("input");
-    socket.send(input.value);
-    input.value = "";
+    const input = form.querySelector("input");
+    socket.emit("enter_room", input.value, () => {
+        console.log("server is done!");
+    });
+    input.value ="";
 };
 
-messageForm.addEventListener("submit", handleSubmit)
+form.addEventListener("submit", handleRoomSubmit);
