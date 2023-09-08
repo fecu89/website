@@ -15,11 +15,9 @@ const weServer = SocketIo(httpServer);
 
 weServer.on("connection", (socket) => {
     socket.on("enter_room", (roomName, done) => {
-        console.log(roomName);
-        console.log(socket.id);
-        console.log(socket.rooms);
+        done();
         socket.join(roomName);
-        console.log(socket.rooms);
+        socket.to(roomName).emit("welcome")
     });
 });
 
