@@ -2,6 +2,7 @@ import http from "http";
 import SocketIo from "socket.io"; 
 import express from "express";
 import { WebSocketServer } from "ws";
+import { count, countReset } from "console";
 
 const app = express();
 
@@ -33,6 +34,10 @@ function publicRooms(){
     return publicRooms;
 };
 
+function countRoom(roomName){
+    return wsServer.sockets.adapter.rooms.get(roomName)?.size;
+};
+
 
 wsServer.on("connection", (socket) => {
     socket["nickname"] = "Anon";
@@ -43,11 +48,12 @@ wsServer.on("connection", (socket) => {
     socket.on("enter_room", (roomName, done) => {
         done();
         socket.join(roomName);
-        socket.to(roomName).emit("welcome", socket.nickname);
+        socket.to(roomName).emit("welcome", socket.nickname, countRoom(roomName));
         wsServer.sockets.emit("room_change", publicRooms());
     });
     socket.on("disconnecting", () => {
-        socket.rooms.forEach(room => socket.to(room).emit("bye", socket.nickname));
+        socket.rooms.forEach(room => 
+            socket.to(room).emit("bye", socket.nickname, countRoom(room) - 1));
     });
     socket.on("disconnect", () => {
         wsServer.sockets.emit("room_change", publicRooms());
