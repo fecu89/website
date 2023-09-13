@@ -1,6 +1,7 @@
 import http from "http";
 import SocketIo from "socket.io"; 
 import express from "express";
+import { WebSocketServer } from "ws";
 
 const app = express();
 
@@ -11,10 +12,14 @@ app.get("/", (req,res) => res.render("home"));
 app.get("/*", (req,res) => res.redirect("/"));
 
 const httpServer = http.createServer(app);
-const weServer = SocketIo(httpServer);
+const wsServer = SocketIo(httpServer);
 
-weServer.on("connection", (socket) => {
+wsServer.on("connection", (socket) => {
     socket["nickname"] = "Anon";
+    socket.onAny((event) => {
+        console.log(wsServer.sockets.adapter);
+        console.log(`Socket Event : ${event}`);
+    });
     socket.on("enter_room", (roomName, done) => {
         done();
         socket.join(roomName);
