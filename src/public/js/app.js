@@ -11,6 +11,7 @@ const call = document.getElementById("call");
 let myStream;
 let muted = false;
 let cameraOff = false;
+let roomName;
 
 async function getCameras(){
     try{
@@ -107,3 +108,7 @@ cameraBtn.addEventListener("click", handleCameraClick);
 cameraSelect.addEventListener("input", handleCameraChange);
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
+// socket Code
+socket.on("welcome", () => {
+    console.log("someone joined!");
+});
