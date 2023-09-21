@@ -11,8 +11,8 @@ html(lang="en")
         link(rel="stylesheet", href="public/css/layout/welcome.css")
         link(rel="stylesheet", href="public/css/layout/control.css")
         link(rel="stylesheet", href="public/css/layout/chat.css")
-        link(rel="stylesheet", href="public/css/layout/button.css")
-        link(rel="stylesheet", href="public/css/layout/bubble.css")
+        link(rel="stylesheet", href="public/css/elements/button.css")
+        link(rel="stylesheet", href="public/css/elements/bubble.css")
     body
         header
             h1 Noom 
@@ -31,12 +31,12 @@ html(lang="en")
                         video#myFace(autoplay, playsinline, width="400", height="400") 
                         video#peerFace(autoplay, playsinline, width="400", height="400") 
                     div.chat
-                        ul.chats
+                        ul#chats.chats
                             li example
                             li example
-                        form
+                        form#message
                             input(placeholder="Message", required, type="text")
-                            input(value="Send", required, type="submit")
+                            button#messageBtn Send
                             
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")
