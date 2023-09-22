@@ -115,31 +115,16 @@ async function handleWelcomeSubmit(event){
     input.value = "";
 };
 
-function handleMessageBtn(event){
-    event.preventDefault();
-    const message = document.getElementById("message");
-    const input = message.querySelector("input");
-    const value = input.value;
-    addMessage(value);
-    input.value = "";
-    return value;
-}
 
 muteBtn.addEventListener("click", handleMuteClick);
 cameraBtn.addEventListener("click", handleCameraClick);
 cameraSelect.addEventListener("input", handleCameraChange);
 welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
-
-
 // socket Code
 socket.on("welcome", async () => {
     myDataChannel = myPeerConnection.createDataChannel("chat");
-    const new_message = messageBtn.addEventListener("submit", handleMessageBtn);
-    if(new_message){
-        myDataChannel.send(new_message);
-    };
-    myDataChannel.addEventListener("message", addMessage);
+    myDataChannel.addEventListener("message", (event) => console.log(event.data));
     console.log("made data channel");
     const offer = await myPeerConnection.createOffer();
     myPeerConnection.setLocalDescription(offer);
@@ -150,7 +135,8 @@ socket.on("welcome", async () => {
 socket.on("offer", async (offer) => {
     myPeerConnection.addEventListener("datachannel", (event) => {
         myDataChannel = event.channel;
-        myDataChannel.addEventListener("message", addMessage);
+        myDataChannel.addEventListener("message", (event) => console.log(event.data));
+        event.channel.send(`i received`);
     });
     console.log("received the offer");
     myPeerConnection.setRemoteDescription(offer);
@@ -168,10 +154,6 @@ socket.on("answer", answer => {
 socket.on("ice", ice => {
     console.log("received candidate");
     myPeerConnection.addIceCandidate(ice);
-});
-
-socket.on("new_message", message => {
-    addMessage(message);
 });
 
 // RTC Code 
@@ -206,12 +188,3 @@ function handleIce(data){
     socket.emit("ice", data.candidate, roomName);
 };
 
-// Message Send
-
-function addMessage(event){
-    const ul = document.getElementById("chats");
-    const new_chat = document.createElement("li");
-    const value = event.data;
-    new_chat.innerText = value;
-    ul.append(new_chat);
-}
